@@ -13,13 +13,8 @@ import (
 	"kafka-batch/internal/services"
 	"kafka-batch/internal/worker"
 
-	"github.com/joho/godotenv"
 	_ "go.uber.org/ratelimit"
 )
-
-func init() {
-	godotenv.Load()
-}
 
 func main() {
 

@@ -5,7 +5,6 @@ import (
 	"encoding/json"
 	"job-services/internal/app"
 	"job-services/internal/models"
-	"job-services/internal/worker"
 	"log"
 	"os"
 	"os/signal"
@@ -21,12 +20,6 @@ func main() {
 
 	var wg sync.WaitGroup
 
-	//init work Group
-	workerCount := 5
-	batchSize := 10
-	workerPool := worker.NewWorkerPool(workerCount, batchSize)
-	log.Printf("worker: %d, batchSize: %d", workerCount, batchSize)
-
 	//init consumer
 	concurrency := 1
 	wg.Add(concurrency)
@@ -34,11 +27,9 @@ func main() {
 		defer wg.Done()
 
 		for app.ConsumerRunning {
-
 			msg, err := app.ConsumerReader.Reader.ReadMessage(context.Background())
 			if err == nil {
 				app.ConsumerMsgChan <- &msg
-
 			} else if !app.ConsumerRunning {
 				log.Println("Stop Consumer")
 				return
@@ -65,7 +56,7 @@ func main() {
 			err := json.Unmarshal(msg.Value, &record)
 			if err == nil {
 				//fmt.Println(string(msg.Value))
-				workerPool.Submit(&record)
+				app.WorkerPool.Submit(&record)
 			}
 		}
 	}()
@@ -80,8 +71,8 @@ func main() {
 	close(app.ConsumerMsgChan)
 	wg.Wait()
 
-	//start workerpool
-	workerPool.Stop()
+	//stop workerpool
+	app.WorkerPool.Stop()
 
 	log.Println("Wait 5s before shut down!!!")
 	time.Sleep(time.Second * 5)
