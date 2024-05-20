@@ -1,6 +1,7 @@
 package app
 
 import (
+	"job-services/internal/worker"
 	kf "job-services/kafka"
 	"job-services/mongo"
 
@@ -8,10 +9,11 @@ import (
 )
 
 var (
-	DB *mongo.MongoClient
+	DB              *mongo.MongoClient
 	ConsumerRunning bool
 	ConsumerMsgChan chan *kafka.Message
-	ConsumerReader *kf.Cousumer
+	ConsumerReader  *kf.Cousumer
+	WorkerPool      worker.Worker
 )
 
 func init() {
@@ -19,4 +21,5 @@ func init() {
 	ConsumerMsgChan = make(chan *kafka.Message)
 	ConsumerReader = kf.GetConsumerClient(KAFKA_TOPIC, KAFKA_URL, CONSUMER_GROUP_ID)
 	InitMongoDBClient(MongoConfig)
+	InitPackage()
 }

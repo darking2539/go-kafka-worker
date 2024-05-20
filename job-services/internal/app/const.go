@@ -6,9 +6,9 @@ import (
 
 const (
 	KAFKA_URL         = "localhost:9091,localhost:9092,localhost:9093"
-	KAFKA_TOPIC       = "run-batch-save-db"
-	CONSUMER_GROUP_ID = "consumer-job-services"
-	DB_NAME           = "hello"
+	KAFKA_TOPIC       = "TEST_TOPIC"
+	CONSUMER_GROUP_ID = "TEST_TOPIC_CONSUMER"
+	DB_NAME           = "linebk"
 )
 
 var MongoConfig = mongo.MongoDBConfig{
@@ -16,7 +16,7 @@ var MongoConfig = mongo.MongoDBConfig{
 	Password:           "admin",
 	Hostname:           "localhost",
 	Port:               "27017",
-	Options:            "/?authSource=hello",
+	Options:            "/?authSource=linebk",
 	Timeout:            60000,
 	MaxPoolSize:        100,
 	MinPoolSize:        0,
